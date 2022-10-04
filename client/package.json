@@ -1,0 +1,16 @@
+{
+  "name": "abhorrent-chocolate-inform-r3571",
+  "productName": "abhorrent-chocolate-inform-r3571",
+  "description": "My Electron application description",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "cb",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "21.0.1"
+  }
+}
