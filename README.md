@@ -3,12 +3,12 @@
 
 ### client: 
 
-  prerequest: node
+  prerequisite: node
  
 `npm install` 下载依赖 `npm start`
 
 ### server: 
 
-  prerequest: cargo
+  prerequisite: cargo
  
 `cargo run --bin server`
