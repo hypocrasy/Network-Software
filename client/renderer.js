@@ -4,6 +4,9 @@ var TalkSub;
 var xhr;
 var delay_button;
 var speed_button;
+var speed_lock;
+var delay_lock;
+
 
 function InputPress() {
     // alert(document.getElementById("talkwords").value)
@@ -27,6 +30,12 @@ function new_res(str) {
 
 
 async function delay_test(ip) {
+    if (delay_lock) {
+        new_res("正在测试, 请稍后")
+        return
+    }
+
+    delay_lock = true
     if (!isValidIP(ip)) {
         // new_res("尝试测试网络延迟... <br> 错误的 IP!");
         new_res("错误的 ip")
@@ -38,20 +47,33 @@ async function delay_test(ip) {
     if (res == -1) {
         new_res("不可达")
     } else {
-        new_res(res + "ms")
+        new_res(res.toFixed(3) + "ms")
     }
+    delay_lock = false
 }
 
-function speed_test(ip) {
-    new_res("尚未实现")
-    return
 
-    // todo
-    if (!isValidIP(ip)) {
-        new_res("尝试测试网速... <br> 错误的 IP!");
+async function speed_test(ip) {
+    if (speed_lock) {
+        new_res("正在测速, 请稍后")
+        return
     }
-    // new_res("尝试测试网速, 请稍后")
+    speed_lock = true
+    if (!isValidIP(ip)) {
+        // new_res("尝试测试网络延迟... <br> 错误的 IP!");
+        new_res("错误的 ip")
+        return;
+    }
+    new_res("尝试测试网络延迟, 请稍后")
 
+    let res = await window.electronAPI.speed(ip)
+    if (res == -1) {
+        new_res("不可达")
+    } else {
+        new_res(res.toFixed(0) + "kB/s")
+    }
+
+    speed_lock = false
 }
 
 function init() {
@@ -59,6 +81,8 @@ function init() {
     TalkWords = document.getElementById("talkwords");
     delay_button = document.getElementById("delay_button")
     speed_button = document.getElementById("speed_button")
+    speed_lock = false
+    delay_lock = false
 
     delay_button.addEventListener('click', async () => {
         const filePath = await window.electronAPI.openFile()
