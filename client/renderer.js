@@ -64,7 +64,7 @@ async function speed_test(ip) {
         new_res("错误的 ip")
         return;
     }
-    new_res("尝试测试网络延迟, 请稍后")
+    new_res("尝试测试网络带宽, 请稍后")
 
     let res = await window.electronAPI.speed(ip)
     if (res == -1) {
