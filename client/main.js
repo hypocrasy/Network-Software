@@ -86,32 +86,36 @@ async function ping(ip) {
 async function speed(ip) {
   let arr = new Array()
   let client = new net.Socket
+  let fatal = false
+  client.on('error', () => {
+    fatal = true
+  })
   client.connect(34254, ip, () => {
     console.log("connect successful")
   
   })
   let flag = false
   client.on("data", (data) => {
-    // console.log(data.length)
-    if(data.readInt32BE() == 1919810) {
+    if(data.length >= 4 && data.slice(data.length-4, data.length).readInt32BE() == 1919810) {
       console.log("ok")
       flag = true
     } else {
       arr.push([data.length, Date.now()])
     }
   })
-  for(;!flag;) {
+  for(let i=0;i<30 && !flag;i++) {
     await sleep(200)
   }
-  let consume = arr[arr.length-1][1] - arr[0][1]
-  let sum = 0
-  arr.forEach((val) => sum += val[0])
-  console.log("consume", consume, "sum", sum)
-  return sum/consume
+  if((flag == false && arr.length == 0) || fatal) {
+    return -1
+  } else {
+    let consume = arr[arr.length-1][1] - arr[0][1]
+    let sum = 0
+    arr.forEach((val) => sum += val[0])
+    console.log("consume", consume, "sum", sum)
+    return sum/consume
+  }
   // 可改成更高效的 eventemit 形式
-  
-  
-  
   
 }
 

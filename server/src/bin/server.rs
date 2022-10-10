@@ -39,6 +39,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
         tokio::spawn(async move {
             // Process each socket concurrently.
+            println!("开始测速");
             match speed_test(socket).await {
                 Ok(_ok) => {
                     // todo 后续逻辑
@@ -56,18 +57,18 @@ async fn speed_test(socket: tokio::net::TcpStream) -> Result<(), Box<dyn Error>>
     let (_rx, tx) = socket.into_split();
     let mut tx = BufWriter::with_capacity(1024*1024, tx);
     
-    tx.write_i32(114514).await?;
 
-
+    let buf = [0u8; 1024];
     // 测量下载网速
-    for i in 1..(1024*1024*10) {
-        tx.write_i32(i).await?
+    for _i in 1..(1024*1024) {
+        tx.write(&buf).await?;
     }
 
-    tx.flush().await.unwrap();
+    tx.flush().await?;
 
-    tx.write_i32(1919810).await.unwrap();
-    tx.flush().await.unwrap();
+    tx.write_i32(1919810).await?;
+    tx.flush().await?;
+    println!("测速结束");
     Ok(())
 }
 // use log::*;
