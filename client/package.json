@@ -12,5 +12,8 @@
   "devDependencies": {
     "electron": "21.0.1",
     "electron-packager": "^16.0.0"
+  },
+  "dependencies": {
+    "echarts": "^5.4.0"
   }
 }
