@@ -8,6 +8,9 @@ const sleep = promisify(setTimeout)
 const events = require('events')
 const net = require('net')
 const { EventEmitter } = require('stream')
+// const fs = require('fs')
+
+// const result_file = fs.openSync("./result.log")
 
 var last_ping
 
@@ -53,6 +56,7 @@ app.whenReady().then(() => {
     if(arr.includes(-1)) {
       return -1
     } else {
+      // fs.appendFileSync(result_file, "ping_result: " + args + " "+arr.toString()+"\n")
       last_ping = arr
       console.log(arr)
       // todo 没跑通, 原来的跨进程通信方式不适用于现在的窗口
@@ -117,10 +121,11 @@ async function speed(ip) {
   let arr = new Array()
   let client = new net.Socket
   let fatal = false
-  client.on('error', () => {
+  client.on('error', (err) => {
+    console.log(err)
     fatal = true
   })
-  client.connect(34254, ip, () => {
+  client.connect(34255, ip, () => {
     console.log("connect successful")
   
   })
@@ -136,6 +141,7 @@ async function speed(ip) {
   for(let i=0;i<30 && !flag;i++) {
     await sleep(200)
   }
+  client.destroy()
   if((flag == false && arr.length == 0) || fatal) {
     return -1
   } else {
@@ -146,7 +152,6 @@ async function speed(ip) {
     return sum/consume
   }
   // 可改成更高效的 eventemit 形式
-  
 }
 
 // function timeout(fun, time) {
