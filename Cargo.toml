@@ -12,7 +12,5 @@ serde = {version = "*", features = ["derive"]}
 lazy_static = "*"
 
 [[bin]]
-name = "dialer"
+name = "client"
 
-[[bin]]
-name = "listener"

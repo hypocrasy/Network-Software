@@ -71,6 +71,7 @@ async fn new_commer(stream: TcpStream) {
     all.all.push(peer);
     drop(all);
     // serve 会在掉线时结束
+    println!("serve({})", reg.name.clone());
     serve(rx, reg.name.clone()).await;
 
 }
@@ -78,13 +79,12 @@ async fn new_commer(stream: TcpStream) {
 
 async fn serve(mut rx: OwnedReadHalf, name: String) {
     loop {
-        println!("serve({})", name);
         let len = rx.read_u32().await.unwrap();
         let mut buf = vec![0u8; len as usize];
         rx.read_exact(&mut buf).await.unwrap();
-        println!("here");
         
         let chat: ChatMessage = serde_json::from_slice(&buf).unwrap();
+        println!("{:?}", chat);
         if chat.source_name == name {
             // 发送方
             let mut all = ALL.lock().await;
@@ -92,7 +92,7 @@ async fn serve(mut rx: OwnedReadHalf, name: String) {
             for p in &mut all.all {
                 if p.name == chat.target_name {
                     let tx = p.tx.clone();
-                    let mut tx = tx.lock().await;                    
+                    let mut tx = tx.lock().await;
                     tx.write_u32(buf.len() as u32).await.unwrap();
                     tx.write(&mut buf).await.unwrap();
                     flag = true;
@@ -106,7 +106,7 @@ async fn serve(mut rx: OwnedReadHalf, name: String) {
                         let mut tx = tx.lock().await;
                         let err = make_error_message(chat.source_name.clone(), "对方不在线");
                         let mut err = serde_json::to_string(&err).unwrap().into_bytes();
-                        tx.write_u32(buf.len() as u32).await.unwrap();
+                        tx.write_u32(err.len() as u32).await.unwrap();
                         tx.write(&mut err).await.unwrap();
                     }
                 }
