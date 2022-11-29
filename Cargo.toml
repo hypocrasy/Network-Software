@@ -1,5 +1,5 @@
 [package]
-name = "websoft3"
+name = "lab1"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,9 +8,5 @@ edition = "2021"
 [dependencies]
 tokio = {version = "*", features = ["full"]}
 
-[[examples]]
+[[bin]]
 name = "server"
-
-
-[[examples]]
-name = "client"
