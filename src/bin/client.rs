@@ -1,4 +1,4 @@
-use std::{error::Error,};
+use std::{error::Error, time::Duration,};
 use tokio::{
     io::{AsyncWriteExt, AsyncReadExt},
     net::{TcpStream}, time,
@@ -19,29 +19,33 @@ async fn async_main() -> Result<(), Box<dyn Error>>{
     println!("ok");
 
     let mut handles = vec![];
-    for _ in 0..100 {
+    for _ in 0..20 {
         let handle = tokio::spawn(async move {
             let mut client = TcpStream::connect("127.0.0.1:34255").await.unwrap();
             let mut buf = vec![0x3fu8; 65535];
             let mut recvbuf = vec![0u8; 65535];
             let t0 = time::Instant::now();
-            let wlen = client.write(&mut buf).await.unwrap();
-            let rlen = client.read(&mut recvbuf).await.unwrap();
+            let _wlen = client.write(&mut buf).await.unwrap();
+            let _rlen = client.read(&mut recvbuf).await.unwrap();
             let t1 = time::Instant::now();
-            assert_eq!(wlen, rlen);
-            assert_eq!(wlen, 65535);
-            for i in 0..65535{
-                assert_eq!(recvbuf[i], buf[i]);
-            }
+            // assert_eq!(wlen, rlen);
+            // assert_eq!(wlen, 65535);
+            // for i in 0..65535{
+            //     assert_eq!(recvbuf[i], buf[i]);
+            // }
             let dur = t1 - t0;
             println!("{:?}", dur);
         });
         handles.push(handle);
     }
-    for handle in handles {
-        handle.await.unwrap();
-    }
-
+    // for handle in handles {
+    //     handle.await.unwrap();
+    // }
+    // loop {
+        
+    // }
+    tokio::time::sleep(Duration::from_secs(20)).await;
+    
     Ok(())
     // loop {
     //     let (mut socket, _addr) = speedso.accept().await?;

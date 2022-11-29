@@ -5,7 +5,7 @@ use tokio::{
 };
 
 fn main() -> Result<(), Box<dyn Error>> {
-    tokio::runtime::Builder::new_current_thread().enable_all()
+    tokio::runtime::Builder::new_multi_thread().enable_all()
         .build().unwrap()
         .block_on(async {
             // async main
@@ -26,6 +26,10 @@ async fn async_main() -> Result<(), Box<dyn Error>>{
         tokio::spawn(async move {
             loop {
                 let n = socket.read(&mut buf).await.unwrap();
+                if n==0 {
+                    break;
+                }
+                println!("recv {} bytes", n);
                 socket.write(&buf[0..n]).await.unwrap();
             }
         });
