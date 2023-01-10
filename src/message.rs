@@ -1,13 +1,15 @@
 use serde::{Deserialize, Serialize};
-
 #[derive(Serialize, Deserialize, Debug)]
-pub(crate) struct RegisterMessage {
-    pub name: String,
+pub struct RegisterMessage {
+    pub ID: String,
+    //pub ketword:String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub(crate) struct ChatMessage {
-    pub source_name: String,
-    pub target_name: String,
+pub  struct ChatMessage {
+    pub source_ID: String,
+    pub target_ID: String,
+    pub ctr:u16,
     pub message: String,
+    pub message_type:u16,
 }

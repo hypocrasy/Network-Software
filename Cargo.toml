@@ -14,3 +14,7 @@ lazy_static = "*"
 [[bin]]
 name = "client"
 
+[lib]
+name="message"
+path="src/message.rs"
+
